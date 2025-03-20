@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        .countdown {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .countdown h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        .countdown p {
+            font-size: 1.5rem;
+        }
+        .selector {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .selector label {
+            font-size: 1rem;
+            margin-right: 10px;
+        }
+        .selector select {
+            padding: 5px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="countdown">
+        <h1>Time left of the Trump madhouse era</h1>
+        <p id="timer">Loading...</p>
+        <p id="age">Calculating age...</p>
+        <p id="spawns">Calculating spawns...</p>
+        
+    </div>
+
+    <div class="selector">
+    <label for="terms" style="font-weight: bold;">Select Additional Terms:</label>
+    <select id="terms">
+        <option value="0">0 Additional Terms</option>
+        <option value="1">1 Additional Term</option>
+        <option value="2">2 Additional Terms</option>
+        <option value="3">3 Additional Terms</option>
+        <option value="4">4 Additional Terms</option>
+    </select>
+</div>
+
+    <div class="selector">
+        <label for="termLength" style="font-weight: bold;">Select Length Of Additional Term:</label>
+        <select id="termLength">
+            
+            <option value="4" selected>4 Years</option>
+            <option value="5">5 Years</option>
+            <option value="6">6 Years</option>
+            <option value="7">7 Years</option>
+            <option value="8">8 Years</option>
+            <option value="9">9 Years</option>
+            <option value="10">10 Years</option>
+            <option value="Infinity">Infinite</option>
+        </select>
+    </div>
+
+    <script>    	
+        const timerElement = document.getElementById('timer');
+        const ageElement = document.getElementById('age');
+        const spawnElement = document.getElementById('spawns');
+        const termsSelector = document.getElementById('terms');
+        const termLengthSelector = document.getElementById('termLength');
+
+        const birthDate = new Date('June 14, 1946');
+
+        function calculateAgeAt(date) {
+            const age = date.getFullYear() - birthDate.getFullYear();
+            const isBeforeBirthday = date.getMonth() < birthDate.getMonth() || 
+                (date.getMonth() === birthDate.getMonth() && date.getDate() < birthDate.getDate());
+            return isBeforeBirthday ? age - 1 : age;
+        }
+
+        function updateCountdown() {
+        	document.body.style.backgroundColor = "#FFD580";
+            const baseDate = new Date('January 20, 2029 12:00:00 GMT-0500');
+            //const baseDate = new Date('March 7, 2025 12:00:00 GMT-0500');
+            const termLength = termLengthSelector.value === "Infinity" ? Infinity : parseInt(termLengthSelector.value) || 4;
+            const additionalTerms = parseInt(termsSelector.value);
+            var additionalYears =0;
+
+            if ((additionalTerms !== 0)) {
+            	document.body.style.backgroundColor = "darkorange";
+            	if (termLength === Infinity) {
+            		document.body.style.backgroundColor = "red";
+            		timerElement.innerText = "";
+                ageElement.innerText = "Infinite Trump dynasty";
+                spawnElement.innerText = "Musk spawns: Infinite";
+                return;
+            	} else {            		
+            		additionalYears = additionalTerms * termLength;
+            	}
+            	
+            }	
+
+           
+            const endDate = new Date(baseDate);
+            endDate.setFullYear(baseDate.getFullYear() + additionalYears);
+            
+            const now = new Date(); 
+            const timeLeft = endDate - now;
+              
+            if (timeLeft > 0) {
+                const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+                timerElement.innerText = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+                ageElement.innerText = `Trump's age at end: ${calculateAgeAt(endDate)} years`;
+                spawnElement.innerText = `Musk spawns: ${ parseInt( Math.pow(endDate.getTime()/1000000000000 , 4)*10)}`;
+            } else {
+                timerElement.innerText = "The term has ended. Freedom.";
+                document.body.style.backgroundColor = "green";
+                ageElement.innerText = "";
+                spawnElement.innerText = "";
+            }
+
+        }
+
+        termsSelector.addEventListener('change', updateCountdown);
+        termLengthSelector.addEventListener('change', updateCountdown);
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown(); // Initialize countdown on load
+    </script>
+</body>
+</html>
